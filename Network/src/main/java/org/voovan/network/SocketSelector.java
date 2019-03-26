@@ -71,9 +71,13 @@ public class SocketSelector implements Closeable {
 		addChooseEvent(8, ()-> {
 			try {
 				SelectionKey selectionKey = socketContext.socketChannel().register(selector, ops, socketContext);
-				if (socketContext.getSession() != null) {
-					socketContext.getSession().setSelectionKey(selectionKey);
-					socketContext.getSession().setSocketSelector(this);
+				IoSession session = socketContext.getSession();
+				if (session != null) {
+					session.setSelectionKey(selectionKey);
+					session.setSocketSelector(this);
+
+					//客户端模式主动发起 SSL 握手的第一个请求
+					session.getSSLParser().doHandShake();
 				}
 
 				return true;

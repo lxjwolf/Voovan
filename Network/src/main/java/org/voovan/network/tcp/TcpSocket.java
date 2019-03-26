@@ -163,11 +163,7 @@ public class TcpSocket extends SocketContext<SocketChannel, TcpSession> {
 		bindToSocketSelector(SelectionKey.OP_READ);
 
 		if(session.isSSLMode()) {
-			//客户端模式主动发起 SSL 握手的第一个请求
-			session.getSocketSelector().getEventRunner().addEvent(10, ()->{
-				session.getSSLParser().doHandShake();
-			});
-
+			//在 SocketSelector.register 中发起第一次握手信息
 			session.getSSLParser().waitHandShakeDone();
 		} else {
 			//SSL 的 onConnect 时间在 SSLParser 中触发
