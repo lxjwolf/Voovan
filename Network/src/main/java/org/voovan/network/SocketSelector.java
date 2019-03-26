@@ -76,8 +76,10 @@ public class SocketSelector implements Closeable {
 					session.setSelectionKey(selectionKey);
 					session.setSocketSelector(this);
 
-					//客户端模式主动发起 SSL 握手的第一个请求
-					session.getSSLParser().doHandShake();
+					if(!SSLParser.isHandShakeDone(session)) {
+						//客户端模式主动发起 SSL 握手的第一个请求
+						session.getSSLParser().doHandShake();
+					}
 				}
 
 				return true;
